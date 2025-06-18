@@ -1,0 +1,53 @@
+.goalsSection {
+  width: 100%;
+}
+
+.goalsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.goalsTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000000;
+}
+
+.addGoalButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #4F67FF;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.addGoalButton:hover {
+  background-color: #3b52db;
+}
+
+.plusIcon {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .goalsHeader {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .addGoalButton {
+    justify-content: center;
+  }
+}

@@ -1,0 +1,26 @@
+.goalCard {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.goalCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.goalTitle {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.goalAmount {
+  font-size: 1.125rem;
+  color: #4F67FF;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
