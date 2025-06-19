@@ -15,7 +15,7 @@ interface DetailedGoalModalProps {
 
 const DetailedGoalModal = ({ goal, isOpen, onClose }: DetailedGoalModalProps) => {
   const { removeGoal, updateGoalAmount } = useGoalContext();
-  const { closeDetailedGoalModal, currentDetailedGoal } = useModalContext();
+  const { currentDetailedGoal } = useModalContext();
   
   // State for tab navigation
   const [activeTab, setActiveTab] = useState<'overview' | 'contributions'>('overview');
@@ -88,7 +88,6 @@ const DetailedGoalModal = ({ goal, isOpen, onClose }: DetailedGoalModalProps) =>
     // Get the parts before and after decimal
     const parts = value.split('.');
     const beforeDecimal = parts[0] || '';
-    const afterDecimal = parts.length > 1 ? parts[1] : '';
     
     // Check if the digits before decimal exceed the limit
     if (beforeDecimal.length > 10) { // Limit to 10 digits

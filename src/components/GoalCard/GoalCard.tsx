@@ -31,7 +31,6 @@ const GoalCard = ({ goal }: GoalCardProps) => {
     const remainingAmount = Math.max(0, amount - savedAmount);
     
     // Format the primary currency amount
-    const formattedAmount = formatCurrency(amount, currency);
     const formattedSavedAmount = formatCurrency(savedAmount, currency);
     const formattedRemainingAmount = formatCurrency(remainingAmount, currency);
     

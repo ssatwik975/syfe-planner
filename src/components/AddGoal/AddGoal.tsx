@@ -92,7 +92,6 @@ const AddGoal = ({ isOpen, onClose, onSubmit, existingGoalNames }: AddGoalProps)
     // Get the parts before and after decimal
     const parts = value.split('.');
     const beforeDecimal = parts[0] || '';
-    const afterDecimal = parts.length > 1 ? parts[1] : '';
     
     // Check if the digits before decimal exceed the limit
     if (beforeDecimal.length > MAX_AMOUNT_DIGITS) {
