@@ -27,6 +27,7 @@ export interface ContributionFormData {
   goalId: string;
   amount: number;
   note?: string;
+  date?: string; // Add date property to allow custom dates
 }
 
 export interface FormErrors {

@@ -23,6 +23,7 @@ interface AddContributionProps {
 }
 
 const MAX_NOTE_LENGTH = 100; // Character limit for notes
+const MAX_AMOUNT_DIGITS = 10; // Maximum digits for amount input
 
 const AddContribution = ({ 
   goalId, 
@@ -36,6 +37,7 @@ const AddContribution = ({
   const [amount, setAmount] = useState<string>('');
   const [currency, setCurrency] = useState<Currency>(goalCurrency);
   const [note, setNote] = useState<string>('');
+  const [contributionDate, setContributionDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [exceedsMax, setExceedsMax] = useState(false);
@@ -50,6 +52,16 @@ const AddContribution = ({
     
     // Prevent multiple decimal points
     const decimalPoint = value.match(/\./g)?.length || 0;
+    
+    // Get the parts before and after decimal
+    const parts = value.split('.');
+    const beforeDecimal = parts[0] || '';
+    
+    // Check if the digits before decimal exceed the limit
+    if (beforeDecimal.length > MAX_AMOUNT_DIGITS) {
+      return; // Don't update if exceeds digit limit
+    }
+    
     if (decimalPoint <= 1) {
       setAmount(value);
       checkIfExceedsMax(value, currency);
@@ -109,6 +121,11 @@ const AddContribution = ({
     setCurrency(newCurrency);
   };
   
+  // Handle date change
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setContributionDate(e.target.value);
+  };
+  
   // Handle note change with character limit
   const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -122,6 +139,13 @@ const AddContribution = ({
     const amountValue = parseFloat(amount);
     if (!amount || isNaN(amountValue) || amountValue <= 0) {
       return { isValid: false, error: 'Please enter a valid positive amount' };
+    }
+    
+    // Validate date
+    const selectedDate = new Date(contributionDate);
+    const today = new Date();
+    if (isNaN(selectedDate.getTime()) || selectedDate > today) {
+      return { isValid: false, error: 'Please select a valid date (not in the future)' };
     }
     
     return { isValid: true, error: null };
@@ -154,15 +178,17 @@ const AddContribution = ({
       finalAmount = finalAmount * conversionRate;
     }
 
-    // Check if this contribution will complete the goal
-    const willCompleteGoal = finalAmount >= maxAmount;
+    // Create date string with time set to noon (to avoid timezone issues)
+    const dateWithTime = new Date(contributionDate);
+    dateWithTime.setHours(12, 0, 0, 0);
     
     // Submit with a slight delay to show loading state
     setTimeout(() => {
       addContribution({
         goalId,
         amount: finalAmount > maxAmount ? maxAmount : finalAmount, // Ensure we don't exceed the max
-        note: note.trim() || undefined
+        note: note.trim() || undefined,
+        date: dateWithTime.toISOString() // Use the selected date
       });
       
       // Reset states
@@ -181,6 +207,7 @@ const AddContribution = ({
       setExceedsMax(false);
       setCurrency(goalCurrency);
       setIsSubmitting(false);
+      setContributionDate(new Date().toISOString().split('T')[0]); // Reset to today
 
       // Focus on amount input when modal opens
       setTimeout(() => amountInputRef.current?.focus(), 100);
@@ -241,7 +268,7 @@ const AddContribution = ({
               value={amount}
               onChange={handleAmountChange}
               placeholder="0.00"
-              className={error ? styles.inputError : exceedsMax ? styles.inputWarning : ''}
+              className={error && error.includes('amount') ? styles.inputError : exceedsMax ? styles.inputWarning : ''}
               disabled={isSubmitting}
               autoComplete="off"
               autoCorrect="off"
@@ -249,13 +276,33 @@ const AddContribution = ({
             />
             <span className={styles.currencyIndicator}>{currency}</span>
           </InputWrapper>
-          {error ? (
+          {error && error.includes('amount') ? (
             <ErrorText error={error} />
           ) : exceedsMax ? (
             <p className={styles.maxMessage}>
               This exceeds the remaining amount. Your contribution will be adjusted to {currency === 'USD' ? '$' : '₹'}{displayMaxAmount.toFixed(2)}.
             </p>
           ) : null}
+        </FormGroup>
+        
+        {/* Date Input */}
+        <FormGroup>
+          <Label htmlFor="contributionDate">Date</Label>
+          <InputWrapper>
+            <input
+              type="date"
+              id="contributionDate"
+              name={`contributionDate-${Math.random()}`}
+              value={contributionDate}
+              onChange={handleDateChange}
+              max={new Date().toISOString().split('T')[0]} // Prevent future dates
+              className={error && error.includes('date') ? styles.inputError : ''}
+              disabled={isSubmitting}
+            />
+          </InputWrapper>
+          {error && error.includes('date') && (
+            <ErrorText error={error} />
+          )}
         </FormGroup>
         
         {/* Currency Toggle */}

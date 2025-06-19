@@ -18,6 +18,8 @@ interface AddGoalProps {
   existingGoalNames: string[];
 }
 
+const MAX_AMOUNT_DIGITS = 10; // Maximum digits for amount input
+
 const AddGoal = ({ isOpen, onClose, onSubmit, existingGoalNames }: AddGoalProps) => {
   // State Management
   const [title, setTitle] = useState('');
@@ -42,6 +44,8 @@ const AddGoal = ({ isOpen, onClose, onSubmit, existingGoalNames }: AddGoalProps)
     const amountValue = parseFloat(amount);
     if (!amount || isNaN(amountValue) || amountValue <= 0) {
       newErrors.amount = 'Please enter a valid positive amount';
+    } else if (amountValue > 1000000000) {
+      newErrors.amount = 'Amount cannot exceed 1 billion';
     }
     
     return { isValid: Object.keys(newErrors).length === 0, errors: newErrors };
@@ -84,8 +88,22 @@ const AddGoal = ({ isOpen, onClose, onSubmit, existingGoalNames }: AddGoalProps)
     
     // Prevent multiple decimal points
     const decimalPoint = value.match(/\./g)?.length || 0;
+    
+    // Get the parts before and after decimal
+    const parts = value.split('.');
+    const beforeDecimal = parts[0] || '';
+    const afterDecimal = parts.length > 1 ? parts[1] : '';
+    
+    // Check if the digits before decimal exceed the limit
+    if (beforeDecimal.length > MAX_AMOUNT_DIGITS) {
+      return; // Don't update if exceeds digit limit
+    }
+    
     if (decimalPoint <= 1) {
       setAmount(value);
+      if (errors.amount) {
+        setErrors((prev) => ({ ...prev, amount: undefined }));
+      }
     }
   };
 

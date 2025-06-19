@@ -233,7 +233,7 @@ export const GoalProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       payload: {
         ...contributionData,
         id: crypto.randomUUID(),
-        date: new Date().toISOString()
+        date: contributionData.date || new Date().toISOString() // Use provided date or current date
       }
     });
   };

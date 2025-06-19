@@ -55,16 +55,6 @@ const DetailedGoalModal = ({ goal, isOpen, onClose }: DetailedGoalModalProps) =>
     });
   };
 
-  // Format datetime for contribution items
-  const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
 
   // Get creation date (either from explicit createdAt or first contribution)
   const creationDate = createdAt 
@@ -94,6 +84,17 @@ const DetailedGoalModal = ({ goal, isOpen, onClose }: DetailedGoalModalProps) =>
     
     // Prevent multiple decimal points
     const decimalPoint = value.match(/\./g)?.length || 0;
+    
+    // Get the parts before and after decimal
+    const parts = value.split('.');
+    const beforeDecimal = parts[0] || '';
+    const afterDecimal = parts.length > 1 ? parts[1] : '';
+    
+    // Check if the digits before decimal exceed the limit
+    if (beforeDecimal.length > 10) { // Limit to 10 digits
+      return; // Don't update if exceeds digit limit
+    }
+    
     if (decimalPoint <= 1) {
       setNewAmount(value);
       setEditError(null);
@@ -113,6 +114,12 @@ const DetailedGoalModal = ({ goal, isOpen, onClose }: DetailedGoalModalProps) =>
     // Validate that new amount is not less than saved amount
     if (parsedAmount < savedAmount) {
       setEditError(`Amount cannot be less than already saved amount (${formattedSavedAmount})`);
+      return;
+    }
+    
+    // Enforce the 1 billion limit
+    if (parsedAmount > 1000000000) {
+      setEditError('Amount cannot exceed 1 billion');
       return;
     }
     
@@ -289,13 +296,11 @@ interface ContributionItemProps {
 const ContributionItem = ({ contribution, currency }: ContributionItemProps) => {
   const { amount, date, note } = contribution;
   
-  // Format the date with time for display
-  const formattedDateTime = new Date(date).toLocaleString('en-US', {
+  // Format just the date part (no time)
+  const formattedDate = new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+    day: 'numeric'
   });
 
   return (
@@ -308,7 +313,7 @@ const ContributionItem = ({ contribution, currency }: ContributionItemProps) => 
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M10 5H2M3 1V2M9 1V2M2.6 10H9.4C9.73137 10 10 9.73137 10 9.4V3.6C10 3.26863 9.73137 3 9.4 3H2.6C2.26863 3 2 3.26863 2 3.6V9.4C2 9.73137 2.26863 10 2.6 10Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          {formattedDateTime}
+          {formattedDate}
         </span>
       </div>
       
