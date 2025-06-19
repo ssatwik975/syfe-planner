@@ -1,5 +1,6 @@
 import type { Goal } from '../../types/goals';
 import GoalCard from '../GoalCard/GoalCard';
+import { sortGoalsByDate } from '../../utils';
 import styles from './GoalsGrid.module.css';
 
 interface GoalsGridProps {
@@ -8,14 +9,17 @@ interface GoalsGridProps {
 }
 
 const GoalsGrid = ({ goals, onAddGoal }: GoalsGridProps) => {
+  // Use the utility function to sort goals
+  const sortedGoals = sortGoalsByDate(goals);
+
   return (
     <div className={styles.container}>
       {goals.length === 0 ? (
-        <div className={styles.emptyState}>
-          <div className={styles.emptyStateContent}>
-            <svg className={styles.emptyStateIcon} width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="32" cy="32" r="28" stroke="#4F67FF" strokeWidth="2" strokeDasharray="4 4" fill="none"/>
-              <path d="M32 20V44" stroke="#4F67FF" strokeWidth="2.5" strokeLinecap="round"/>
+        <div className={styles.emptyStateContainer}>
+          <div className={styles.emptyState}>
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={styles.emptyStateIcon}>
+              <circle cx="32" cy="32" r="24" stroke="#4F67FF" strokeWidth="2.5" strokeLinecap="round"/>
+              <path d="M32 20L32 44" stroke="#4F67FF" strokeWidth="2.5" strokeLinecap="round"/>
               <path d="M44 32L20 32" stroke="#4F67FF" strokeWidth="2.5" strokeLinecap="round"/>
             </svg>
             <h3 className={styles.emptyStateTitle}>No goals yet</h3>
@@ -31,7 +35,7 @@ const GoalsGrid = ({ goals, onAddGoal }: GoalsGridProps) => {
         </div>
       ) : (
         <div className={styles.grid}>
-          {goals.map(goal => (
+          {sortedGoals.map(goal => (
             <GoalCard key={goal.id} goal={goal} />
           ))}
         </div>

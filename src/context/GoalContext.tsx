@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useReducer, useEffect, useState } from 'react';
+import { createContext, useContext, useReducer, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { Goal, Currency, GoalFormData, ContributionFormData, ExchangeRates } from '../types/goals';
 import { goalReducer, initialState } from './goalReducer';
+import type { Goal, Currency, GoalFormData, ContributionFormData, ExchangeRates } from '../types/goals';
 import { fetchExchangeRates } from '../utils/api';
+import { convertCurrency, calculateProgress, isValidGoal } from '../utils';
 
 // App namespace to prevent conflicts with other apps
 const APP_NAMESPACE = 'syfe-planner';
@@ -30,26 +31,12 @@ interface GoalContextType {
   removeGoal: (goalId: string) => void;
   updateGoalAmount: (goalId: string, amount: number) => void;
   addContribution: (contributionData: ContributionFormData) => void;
-  updateExchangeRates: () => Promise<void>;
+  updateExchangeRates: (forceRefresh?: boolean) => Promise<void>;
   getTotalSaved: (currency: Currency) => number;
   getTotalTarget: (currency: Currency) => number;
   getOverallProgress: () => number;
   exportData: () => string;
   importData: (jsonData: string) => boolean;
-}
-
-// Validation function for goals
-function isValidGoal(goal: any): goal is Goal {
-  return (
-    typeof goal === 'object' && goal !== null &&
-    typeof goal.id === 'string' &&
-    typeof goal.title === 'string' &&
-    typeof goal.amount === 'number' &&
-    typeof goal.savedAmount === 'number' &&
-    (goal.currency === 'USD' || goal.currency === 'INR') &&
-    Array.isArray(goal.contributions) &&
-    (typeof goal.createdAt === 'string' || goal.createdAt === undefined) // Make createdAt optional for backwards compatibility
-  );
 }
 
 // Create context with a default value
@@ -185,29 +172,35 @@ export const GoalProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  // Fetch exchange rates when the app loads if needed
+  // Fetch exchange rates when the app loads and every 5 minutes
   useEffect(() => {
-    const lastUpdated = new Date(state.exchangeRates.lastUpdated).getTime();
-    const now = new Date().getTime();
+    // Always fetch fresh rates on initial load
+    updateExchangeRates(true);
     
-    // Only fetch new rates if the cached ones are expired
-    if (now - lastUpdated > EXCHANGE_RATE_CACHE_TIME) {
+    // Set up interval to refresh rates every 5 minutes (300000 ms)
+    const refreshInterval = setInterval(() => {
       updateExchangeRates();
-    }
-  }, []);
+    }, 300000); // 5 minutes in milliseconds
+    
+    // Cleanup interval on component unmount
+    return () => clearInterval(refreshInterval);
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   // Add a new goal
   const addGoal = (goalData: GoalFormData) => {
-    dispatch({
-      type: 'ADD_GOAL',
-      payload: {
-        ...goalData,
-        id: crypto.randomUUID(),
-        savedAmount: 0,
-        contributions: [],
-        createdAt: new Date().toISOString() // Add creation date
-      }
-    });
+    const newGoal: Goal = {
+      id: crypto.randomUUID(),
+      ...goalData,
+      savedAmount: 0,
+      contributions: [],
+      createdAt: new Date().toISOString()
+    };
+
+    dispatch({ type: 'ADD_GOAL', payload: newGoal });
+    
+    // Update localStorage for cross-tab sync
+    const updatedGoals = [...state.goals, newGoal];
+    localStorage.setItem(STORAGE_KEYS.GOALS, JSON.stringify(updatedGoals));
   };
 
   // Remove a goal
@@ -239,43 +232,24 @@ export const GoalProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   // Update exchange rates
-  // Update exchange rates with rate limiting
   const updateExchangeRates = async (forceRefresh = false) => {
-    const now = Date.now();
+    const now = new Date().getTime();
     
-    // Prevent rapid repeated fetches unless forcing refresh
+    // Check if we've fetched recently to prevent API abuse
     if (!forceRefresh && now - lastFetchAttempt < MIN_FETCH_INTERVAL) {
       console.log('Rate fetch throttled. Please wait before trying again.');
       return;
     }
     
     setLastFetchAttempt(now);
+    dispatch({ type: 'FETCH_RATES_START' });
     
     try {
-      // Skip cache check if force refresh is requested
-      if (!forceRefresh) {
-        const storedRates = localStorage.getItem(STORAGE_KEYS.RATES);
-        if (storedRates) {
-          const ratesData = JSON.parse(storedRates);
-          const lastUpdated = new Date(ratesData.lastUpdated).getTime();
-          const now = new Date().getTime();
-          
-          // If rates are less than 15 minutes old, use them instead of making an API call
-          if (now - lastUpdated < EXCHANGE_RATE_CACHE_TIME) {
-            dispatch({ type: 'FETCH_RATES_SUCCESS', payload: ratesData });
-            return;
-          }
-        }
-      }
-      
-      // Otherwise fetch fresh rates
-      dispatch({ type: 'FETCH_RATES_START' });
-      
-      // Make the API call - now we need to ensure the API itself also ignores cache
-      // when forceRefresh is true (if you have implemented caching in the API function)
       const rates = await fetchExchangeRates();
-      
       dispatch({ type: 'FETCH_RATES_SUCCESS', payload: rates });
+      
+      // Update localStorage for cross-tab sync
+      localStorage.setItem(STORAGE_KEYS.RATES, JSON.stringify(rates));
     } catch (error) {
       dispatch({ 
         type: 'FETCH_RATES_ERROR', 
@@ -287,30 +261,14 @@ export const GoalProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Calculate total saved amount in specified currency
   const getTotalSaved = (currency: Currency): number => {
     return state.goals.reduce((total, goal) => {
-      if (goal.currency === currency) {
-        return total + goal.savedAmount;
-      } else {
-        // Convert from one currency to another
-        const conversionRate = currency === 'USD' 
-          ? state.exchangeRates.INR_USD 
-          : state.exchangeRates.USD_INR;
-        return total + goal.savedAmount * conversionRate;
-      }
+      return total + convertCurrency(goal.savedAmount, goal.currency, currency, state.exchangeRates);
     }, 0);
   };
 
   // Calculate total target amount in specified currency
   const getTotalTarget = (currency: Currency): number => {
     return state.goals.reduce((total, goal) => {
-      if (goal.currency === currency) {
-        return total + goal.amount;
-      } else {
-        // Convert from one currency to another
-        const conversionRate = currency === 'USD' 
-          ? state.exchangeRates.INR_USD 
-          : state.exchangeRates.USD_INR;
-        return total + goal.amount * conversionRate;
-      }
+      return total + convertCurrency(goal.amount, goal.currency, currency, state.exchangeRates);
     }, 0);
   };
 
@@ -320,7 +278,7 @@ export const GoalProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (totalTarget === 0) return 0;
     
     const totalSaved = getTotalSaved('USD');
-    return (totalSaved / totalTarget) * 100;
+    return calculateProgress(totalSaved, totalTarget);
   };
 
   // Add export/import functions for data backup

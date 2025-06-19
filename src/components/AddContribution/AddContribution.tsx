@@ -11,6 +11,7 @@ import {
   FormActions,
   ConversionInfo
 } from '../shared/FormUI/FormUI';
+import { validateAmount, validateDate, getConversionRate, convertCurrency } from '../../utils';
 import styles from './AddContribution.module.css';
 
 interface AddContributionProps {
@@ -81,12 +82,8 @@ const AddContribution = ({
       // Calculate max contribution in current currency
       let maxAllowedAmount = maxAmount;
       if (currentCurrency !== goalCurrency) {
-        // Convert max amount to the contribution currency
-        const conversionRate = 
-          currentCurrency === 'USD' && goalCurrency === 'INR' 
-            ? exchangeRates.INR_USD  // INR -> USD
-            : exchangeRates.USD_INR; // USD -> INR
-        maxAllowedAmount = maxAmount * conversionRate;
+        // Convert max amount to the contribution currency using utility
+        maxAllowedAmount = convertCurrency(maxAmount, goalCurrency, currentCurrency, exchangeRates);
       }
       
       setExceedsMax(parsedAmount > maxAllowedAmount);
@@ -101,13 +98,8 @@ const AddContribution = ({
       // Convert the current amount to the new currency
       const parsedAmount = parseFloat(amount);
       if (!isNaN(parsedAmount)) {
-        const conversionRate = 
-          currency === 'USD' && newCurrency === 'INR' 
-            ? exchangeRates.USD_INR 
-            : exchangeRates.INR_USD;
-        
-        // Convert and format to 2 decimal places
-        const convertedAmount = (parsedAmount * conversionRate).toFixed(2);
+        // Use utility function for conversion
+        const convertedAmount = convertCurrency(parsedAmount, currency, newCurrency, exchangeRates).toFixed(2);
         
         // Update the amount
         setAmount(convertedAmount);
@@ -136,16 +128,16 @@ const AddContribution = ({
   
   // Form Validation & Submission
   const validateForm = () => {
-    const amountValue = parseFloat(amount);
-    if (!amount || isNaN(amountValue) || amountValue <= 0) {
-      return { isValid: false, error: 'Please enter a valid positive amount' };
+    // Validate amount using utility function
+    const amountValidation = validateAmount(amount);
+    if (!amountValidation.isValid) {
+      return { isValid: false, error: amountValidation.error };
     }
     
-    // Validate date
-    const selectedDate = new Date(contributionDate);
-    const today = new Date();
-    if (isNaN(selectedDate.getTime()) || selectedDate > today) {
-      return { isValid: false, error: 'Please select a valid date (not in the future)' };
+    // Validate date using utility function
+    const dateValidation = validateDate(contributionDate);
+    if (!dateValidation.isValid) {
+      return { isValid: false, error: dateValidation.error };
     }
     
     return { isValid: true, error: null };
@@ -215,13 +207,8 @@ const AddContribution = ({
   }, [isOpen, goalCurrency]);
   
   // Get conversion rate info for display
-  const conversionRate = 
-    currency === 'USD' && goalCurrency === 'INR' 
-      ? exchangeRates.USD_INR 
-      : currency === 'INR' && goalCurrency === 'USD'
-        ? exchangeRates.INR_USD
-        : 1;
-
+  const conversionRate = getConversionRate(currency, goalCurrency, exchangeRates);
+  
   // Calculate max amount in current currency
   let displayMaxAmount = maxAmount;
   if (currency !== goalCurrency) {

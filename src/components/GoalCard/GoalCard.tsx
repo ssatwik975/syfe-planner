@@ -1,7 +1,7 @@
 import type { Goal } from '../../types/goals';
 import { useGoalContext } from '../../context/GoalContext';
 import { useModalContext } from '../../context/ModalContext';
-import { formatCurrency } from '../../utils/api';
+import { formatCurrency, calculateProgress, isGoalComplete, calculateRemainingAmount, convertCurrency } from '../../utils';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import styles from './GoalCard.module.css';
 
@@ -22,22 +22,21 @@ const GoalCard = ({ goal }: GoalCardProps) => {
         ? `${title.substring(0, MAX_TITLE_LENGTH)}...` 
         : title;
     
-    // Calculate progress percentage
-    const progress = amount > 0 ? (savedAmount / amount) * 100 : 0;
+    // Calculate progress percentage and completion status
+    const progress = calculateProgress(savedAmount, amount);
     const progressFormatted = Math.round(progress);
-    const isComplete = savedAmount >= amount;
+    const isComplete = isGoalComplete(savedAmount, amount);
     
     // Calculate remaining amount
-    const remainingAmount = Math.max(0, amount - savedAmount);
+    const remainingAmount = calculateRemainingAmount(amount, savedAmount);
     
     // Format the primary currency amount
     const formattedSavedAmount = formatCurrency(savedAmount, currency);
     const formattedRemainingAmount = formatCurrency(remainingAmount, currency);
     
     // Calculate and format the converted amount
-    const conversionRate = currency === 'USD' ? exchangeRates.USD_INR : exchangeRates.INR_USD;
     const convertedCurrency = currency === 'USD' ? 'INR' : 'USD';
-    const convertedAmount = amount * conversionRate;
+    const convertedAmount = convertCurrency(amount, currency, convertedCurrency, exchangeRates);
     const formattedConvertedAmount = formatCurrency(convertedAmount, convertedCurrency);
     
     const handleAddContribution = () => {

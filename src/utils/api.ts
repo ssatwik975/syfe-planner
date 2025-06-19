@@ -45,13 +45,3 @@ export async function fetchExchangeRates(): Promise<ExchangeRates> {
     return FALLBACK_RATES;
   }
 }
-
-// Utility function to format currency
-export const formatCurrency = (amount: number, currency: string) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2
-  }).format(amount);
-};

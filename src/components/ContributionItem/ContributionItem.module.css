@@ -1,0 +1,65 @@
+/* Simplified contribution item styling */
+.contributionItem {
+  background-color: #f9fafc;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #eaeefb;
+  transition: all 0.2s ease;
+}
+
+.contributionItem:hover {
+  border-color: #d5dff7;
+  box-shadow: 0 4px 12px rgba(79, 103, 255, 0.06);
+}
+
+/* Simplified header layout */
+.contributionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.contributionAmount {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.contributionDate {
+  font-size: 0.85rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Simplified contribution note section */
+.contributionNote {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.contributionNote p {
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.5;
+  color: #555;
+  word-break: break-word;  /* Ensure text breaks to prevent overflow */
+  overflow-wrap: break-word;
+  max-width: 100%;         /* Contain within parent width */
+}
+
+/* Responsive styles */
+@media (max-width: 640px) {
+  .contributionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  
+  .contributionItem {
+    padding: 14px;
+  }
+}

@@ -14,7 +14,7 @@ export interface Goal {
   currency: Currency;
   savedAmount: number;
   contributions: Contribution[];
-  createdAt: string; // New field for creation date
+  createdAt: string; // ISO string representation of creation date
 }
 
 export interface GoalFormData {

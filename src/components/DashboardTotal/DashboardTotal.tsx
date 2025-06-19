@@ -1,4 +1,5 @@
 import { useGoalContext } from '../../context/GoalContext';
+import { formatCurrency } from '../../utils';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import styles from './DashboardTotal.module.css';
 
@@ -44,7 +45,7 @@ const DashboardTotal = () => {
         </div>
         <button 
           className={styles.refreshButton}
-          onClick={updateExchangeRates}
+          onClick={() => updateExchangeRates(true)}
           disabled={isLoading}
         >
           <svg className={`${styles.refreshIcon} ${isLoading ? styles.spin : ''}`} width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -69,8 +70,8 @@ const DashboardTotal = () => {
             <h3>Total Targets</h3>
           </div>
           <div className={styles.amountDisplay}>
-            <p className={styles.primaryAmount}>₹{Math.round(totalTargetINR).toLocaleString('en-IN')}</p>
-            <p className={styles.secondaryAmount}>${Math.round(totalTargetUSD).toLocaleString('en-US')}</p>
+            <p className={styles.primaryAmount}>{formatCurrency(totalTargetINR, 'INR')}</p>
+            <p className={styles.secondaryAmount}>{formatCurrency(totalTargetUSD, 'USD')}</p>
           </div>
         </div>
         
@@ -87,8 +88,8 @@ const DashboardTotal = () => {
             <h3>Total Saved</h3>
           </div>
           <div className={styles.amountDisplay}>
-            <p className={styles.primaryAmount}>₹{Math.round(totalSavedINR).toLocaleString('en-IN')}</p>
-            <p className={styles.secondaryAmount}>${Math.round(totalSavedUSD).toLocaleString('en-US')}</p>
+            <p className={styles.primaryAmount}>{formatCurrency(totalSavedINR, 'INR')}</p>
+            <p className={styles.secondaryAmount}>{formatCurrency(totalSavedUSD, 'USD')}</p>
           </div>
         </div>
         

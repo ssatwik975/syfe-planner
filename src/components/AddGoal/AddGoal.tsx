@@ -9,6 +9,7 @@ import {
   CurrencyToggle, 
   FormActions 
 } from '../shared/FormUI/FormUI';
+import { validateAmount } from '../../utils';
 import styles from './AddGoal.module.css';
 
 interface AddGoalProps {
@@ -41,11 +42,10 @@ const AddGoal = ({ isOpen, onClose, onSubmit, existingGoalNames }: AddGoalProps)
       newErrors.title = 'A goal with this name already exists';
     }
     
-    const amountValue = parseFloat(amount);
-    if (!amount || isNaN(amountValue) || amountValue <= 0) {
-      newErrors.amount = 'Please enter a valid positive amount';
-    } else if (amountValue > 1000000000) {
-      newErrors.amount = 'Amount cannot exceed 1 billion';
+    // Use utility function to validate amount
+    const amountValidation = validateAmount(amount, 0, 1000000000);
+    if (!amountValidation.isValid) {
+      newErrors.amount = amountValidation.error || undefined;
     }
     
     return { isValid: Object.keys(newErrors).length === 0, errors: newErrors };

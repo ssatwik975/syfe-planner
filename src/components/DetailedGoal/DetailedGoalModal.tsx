@@ -1,11 +1,20 @@
 import { useState, useEffect } from 'react';
 import Modal from '../shared/Modal/Modal';
-import { formatCurrency } from '../../utils/api';
-import type { Goal, Currency } from '../../types/goals';
+import { 
+  formatCurrency, 
+  calculateProgress, 
+  isGoalComplete, 
+  calculateRemainingAmount, 
+  formatDate, 
+  validateAmount,
+  sortContributionsByDate
+} from '../../utils';
+import type { Goal, Contribution } from '../../types/goals';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import { useGoalContext } from '../../context/GoalContext';
 import { useModalContext } from '../../context/ModalContext';
 import styles from './DetailedGoalModal.module.css';
+import ContributionItem from '../ContributionItem/ContributionItem';
 
 interface DetailedGoalModalProps {
   goal: Goal;
@@ -37,31 +46,18 @@ const DetailedGoalModal = ({ goal, isOpen, onClose }: DetailedGoalModalProps) =>
   }, [currentDetailedGoal]);
   
   // Calculate progress percentage
-  const progress = amount > 0 ? (savedAmount / amount) * 100 : 0;
-  const remainingAmount = Math.max(0, amount - savedAmount);
-  const isComplete = savedAmount >= amount;
+  const progress = calculateProgress(savedAmount, amount);
+  const remainingAmount = calculateRemainingAmount(amount, savedAmount);
+  const isComplete = isGoalComplete(savedAmount, amount);
   
   // Format currency amounts
   const formattedAmount = formatCurrency(amount, currency);
   const formattedSavedAmount = formatCurrency(savedAmount, currency);
   const formattedRemainingAmount = formatCurrency(remainingAmount, currency);
   
-  // Format date for display
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-
-  // Get creation date (either from explicit createdAt or first contribution)
-  const creationDate = createdAt 
-    ? formatDate(createdAt)
-    : contributions.length > 0 
-      ? formatDate(contributions[0].date)
-      : formatDate(new Date().toISOString()); // Fallback to current date
+  // Format creation date
+  const creationDate = createdAt ? formatDate(createdAt) : formatDate(new Date().toISOString());
+  
 
   // Handle removing a goal
   const handleRemoveGoal = () => {
@@ -104,21 +100,11 @@ const DetailedGoalModal = ({ goal, isOpen, onClose }: DetailedGoalModalProps) =>
   const handleSaveAmount = () => {
     const parsedAmount = parseFloat(newAmount);
     
-    // Validate amount
-    if (!newAmount || isNaN(parsedAmount) || parsedAmount <= 0) {
-      setEditError('Please enter a valid positive amount');
-      return;
-    }
+    // Validate amount using utility function
+    const validation = validateAmount(newAmount, savedAmount, 1000000000);
     
-    // Validate that new amount is not less than saved amount
-    if (parsedAmount < savedAmount) {
-      setEditError(`Amount cannot be less than already saved amount (${formattedSavedAmount})`);
-      return;
-    }
-    
-    // Enforce the 1 billion limit
-    if (parsedAmount > 1000000000) {
-      setEditError('Amount cannot exceed 1 billion');
+    if (!validation.isValid) {
+      setEditError(validation.error);
       return;
     }
     
@@ -265,63 +251,19 @@ const DetailedGoalModal = ({ goal, isOpen, onClose }: DetailedGoalModalProps) =>
               </div>
             ) : (
               <div className={styles.contributionsList}>
-                {contributions.map((contribution) => (
+                {sortContributionsByDate(contributions).map((contribution: Contribution) => (
                   <ContributionItem 
                     key={contribution.id} 
                     contribution={contribution} 
                     currency={currency}
                   />
-                )).reverse()}
+                ))}
               </div>
             )}
           </div>
         )}
       </div>
     </Modal>
-  );
-};
-
-// Helper component for individual contribution items
-interface ContributionItemProps {
-  contribution: {
-    id: string;
-    amount: number;
-    date: string;
-    note?: string;
-  };
-  currency: Currency;
-}
-
-const ContributionItem = ({ contribution, currency }: ContributionItemProps) => {
-  const { amount, date, note } = contribution;
-  
-  // Format just the date part (no time)
-  const formattedDate = new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  });
-
-  return (
-    <div className={styles.contributionItem}>
-      <div className={styles.contributionHeader}>
-        <span className={styles.contributionAmount}>
-          {formatCurrency(amount, currency)}
-        </span>
-        <span className={styles.contributionDate}>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 5H2M3 1V2M9 1V2M2.6 10H9.4C9.73137 10 10 9.73137 10 9.4V3.6C10 3.26863 9.73137 3 9.4 3H2.6C2.26863 3 2 3.26863 2 3.6V9.4C2 9.73137 2.26863 10 2.6 10Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          {formattedDate}
-        </span>
-      </div>
-      
-      {note && (
-        <div className={styles.contributionNote}>
-          <p>{note}</p>
-        </div>
-      )}
-    </div>
   );
 };
 
