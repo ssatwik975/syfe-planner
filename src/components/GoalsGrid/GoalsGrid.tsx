@@ -15,8 +15,8 @@ const GoalsGrid = ({ goals, onAddGoal }: GoalsGridProps) => {
   return (
     <div className={styles.container}>
       {goals.length === 0 ? (
-        <div className={styles.emptyStateContainer}>
-          <div className={styles.emptyState}>
+        <div className={styles.emptyState}>
+          <div className={styles.emptyStateContent}>
             <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={styles.emptyStateIcon}>
               <circle cx="32" cy="32" r="24" stroke="#4F67FF" strokeWidth="2.5" strokeLinecap="round"/>
               <path d="M32 20L32 44" stroke="#4F67FF" strokeWidth="2.5" strokeLinecap="round"/>
