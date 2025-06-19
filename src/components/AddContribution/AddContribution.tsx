@@ -17,6 +17,7 @@ interface AddContributionProps {
   goalId: string;
   goalName: string;
   currency: Currency;
+  maxAmount: number;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -24,7 +25,8 @@ interface AddContributionProps {
 const AddContribution = ({ 
   goalId, 
   goalName, 
-  currency: goalCurrency, 
+  currency: goalCurrency,
+  maxAmount,
   isOpen, 
   onClose 
 }: AddContributionProps) => {
@@ -34,6 +36,7 @@ const AddContribution = ({
   const [note, setNote] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [exceedsMax, setExceedsMax] = useState(false);
   
   const { addContribution, exchangeRates } = useGoalContext();
   const amountInputRef = useRef<HTMLInputElement>(null);
@@ -47,6 +50,30 @@ const AddContribution = ({
     const decimalPoint = value.match(/\./g)?.length || 0;
     if (decimalPoint <= 1) {
       setAmount(value);
+      
+      // Check if exceeds maximum
+      const amountValue = parseFloat(value);
+      if (!isNaN(amountValue)) {
+        // Calculate max contribution in current currency
+        let maxAllowedAmount = maxAmount;
+        if (currency !== goalCurrency) {
+          // Convert max amount to the contribution currency
+          const conversionRate = 
+            currency === 'USD' && goalCurrency === 'INR' 
+              ? exchangeRates.INR_USD  // INR -> USD
+              : exchangeRates.USD_INR; // USD -> INR
+          maxAllowedAmount = maxAmount * conversionRate;
+        }
+        
+        setExceedsMax(amountValue > maxAllowedAmount);
+      } else {
+        setExceedsMax(false);
+      }
+      
+      // Clear error when user types
+      if (error) {
+        setError(null);
+      }
     }
   };
   
@@ -56,6 +83,7 @@ const AddContribution = ({
     if (!amount || isNaN(amountValue) || amountValue <= 0) {
       return { isValid: false, error: 'Please enter a valid positive amount' };
     }
+    
     return { isValid: true, error: null };
   };
   
@@ -85,12 +113,15 @@ const AddContribution = ({
           : exchangeRates.INR_USD;
       finalAmount = finalAmount * conversionRate;
     }
+
+    // Check if this contribution will complete the goal
+    const willCompleteGoal = finalAmount >= maxAmount;
     
     // Submit with a slight delay to show loading state
     setTimeout(() => {
       addContribution({
         goalId,
-        amount: finalAmount,
+        amount: finalAmount > maxAmount ? maxAmount : finalAmount, // Ensure we don't exceed the max
         note: note.trim() || undefined
       });
       
@@ -107,6 +138,7 @@ const AddContribution = ({
       setAmount('');
       setNote('');
       setError(null);
+      setExceedsMax(false);
       setCurrency(goalCurrency);
       setIsSubmitting(false);
 
@@ -122,6 +154,16 @@ const AddContribution = ({
       : currency === 'INR' && goalCurrency === 'USD'
         ? exchangeRates.INR_USD
         : 1;
+
+  // Calculate max amount in current currency
+  let displayMaxAmount = maxAmount;
+  if (currency !== goalCurrency) {
+    const conversionRate = 
+      currency === 'USD' && goalCurrency === 'INR' 
+        ? exchangeRates.INR_USD  // INR -> USD
+        : exchangeRates.USD_INR; // USD -> INR
+    displayMaxAmount = maxAmount * conversionRate;
+  }
   
   const contributionIcon = (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -138,8 +180,9 @@ const AddContribution = ({
       isSubmitting={isSubmitting}
     >
       <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.goalInfo}>
-          Contributing to: <strong>{goalName}</strong> ({goalCurrency})
+        <div className={styles.goalNameDisplay}>
+          <h3 className={styles.goalNameTitle}>{goalName}</h3>
+          <span className={styles.goalCurrency}>({goalCurrency})</span>
         </div>
         
         {/* Amount Input */}
@@ -154,12 +197,18 @@ const AddContribution = ({
               value={amount}
               onChange={handleAmountChange}
               placeholder="0.00"
-              className={error ? styles.inputError : ''}
+              className={error ? styles.inputError : exceedsMax ? styles.inputWarning : ''}
               disabled={isSubmitting}
             />
             <span className={styles.currencyIndicator}>{currency}</span>
           </InputWrapper>
-          <ErrorText error={error || undefined} />
+          {error ? (
+            <ErrorText error={error} />
+          ) : exceedsMax ? (
+            <p className={styles.maxMessage}>
+              This exceeds the remaining amount. Your contribution will be adjusted to {currency === 'USD' ? '$' : '₹'}{displayMaxAmount.toFixed(2)}.
+            </p>
+          ) : null}
         </FormGroup>
         
         {/* Currency Toggle */}

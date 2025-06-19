@@ -3,12 +3,44 @@
 }
 
 .goalInfo {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   font-size: 0.875rem;
   color: #666;
   padding: 12px;
   background-color: #f9fafc;
   border-radius: 8px;
+}
+
+.maxAmountInfo {
+  margin-bottom: 20px;
+  font-size: 0.875rem;
+  color: #666;
+  padding: 8px 12px;
+  background-color: #f0f9f0;
+  border-radius: 8px;
+  border-left: 3px solid #34c759;
+}
+
+.goalNameDisplay {
+  margin-bottom: 20px;
+  padding: 12px;
+  background-color: #f9fafc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.goalNameTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.goalCurrency {
+  font-size: 0.875rem;
+  color: #666;
 }
 
 .optionalLabel {
@@ -34,4 +66,33 @@
 .inputError {
   border-color: #ff4d4f !important;
   background-color: #fff1f0 !important;
+}
+
+.inputWarning {
+  border-color: #28a745 !important;
+  background-color: #f0fff4 !important;
+}
+
+.maxMessage {
+  color: #28a745;
+  font-size: 0.75rem;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Add a checkmark icon before the max message */
+.maxMessage::before {
+  content: "✓";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  background-color: #28a745;
+  color: white;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: bold;
 }

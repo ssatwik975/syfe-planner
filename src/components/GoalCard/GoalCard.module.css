@@ -32,6 +32,18 @@
   font-weight: 600;
   padding: 0.25rem 0.75rem;
   border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.progressPill.completed {
+  background-color: #e6ffee;
+  color: #1a8d4c;
+}
+
+.checkIcon {
+  margin-right: 2px;
 }
 
 .primaryAmount {
@@ -69,6 +81,11 @@
   font-weight: 500;
 }
 
+.savedAmount.completed {
+  color: #1a8d4c;
+  font-weight: 600;
+}
+
 .progressFooter {
   display: flex;
   justify-content: space-between;
@@ -102,9 +119,16 @@
   gap: 0.5rem;
 }
 
-.addContributionButton:hover {
+.addContributionButton:hover:not(:disabled) {
   background-color: #f5f8ff;
   border-color: #d0d7ff;
+}
+
+.addContributionButton:disabled {
+  background-color: #f0f9f0;
+  color: #1a8d4c;
+  border-color: #d0e9d0;
+  cursor: default;
 }
 
 .plusIcon {

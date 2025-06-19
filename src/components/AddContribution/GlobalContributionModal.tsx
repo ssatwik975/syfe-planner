@@ -7,6 +7,7 @@ const GlobalContributionModal = () => {
     currentGoalId,
     currentGoalName,
     currentGoalCurrency,
+    maxAmount,
     closeContributionModal
   } = useModalContext();
 
@@ -20,6 +21,7 @@ const GlobalContributionModal = () => {
       goalId={currentGoalId}
       goalName={currentGoalName}
       currency={currentGoalCurrency}
+      maxAmount={maxAmount || 0}
       isOpen={isContributionModalOpen}
       onClose={closeContributionModal}
     />

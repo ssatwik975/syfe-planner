@@ -18,9 +18,10 @@ const GoalCard = ({ goal }: GoalCardProps) => {
     // Calculate progress percentage
     const progress = amount > 0 ? (savedAmount / amount) * 100 : 0;
     const progressFormatted = Math.round(progress);
+    const isComplete = savedAmount >= amount;
     
     // Calculate remaining amount
-    const remainingAmount = amount - savedAmount;
+    const remainingAmount = Math.max(0, amount - savedAmount);
     
     // Format the primary currency amount
     const formattedAmount = formatCurrency(amount, currency);
@@ -34,7 +35,7 @@ const GoalCard = ({ goal }: GoalCardProps) => {
     const formattedConvertedAmount = formatCurrency(convertedAmount, convertedCurrency);
     
     const handleAddContribution = () => {
-        openContributionModal(id, title, currency);
+        openContributionModal(id, title, currency, remainingAmount);
     };
 
     // Format the contribution count
@@ -45,7 +46,14 @@ const GoalCard = ({ goal }: GoalCardProps) => {
         <div className={styles.goalCard}>
             <div className={styles.goalHeader}>
                 <h3 className={styles.goalTitle}>{title}</h3>
-                <div className={styles.progressPill}>{progressFormatted}%</div>
+                <div className={`${styles.progressPill} ${isComplete ? styles.completed : ''}`}>
+                    {isComplete && (
+                        <svg className={styles.checkIcon} width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    )}
+                    {progressFormatted}%
+                </div>
             </div>
             
             <div className={styles.primaryAmount}>
@@ -60,23 +68,28 @@ const GoalCard = ({ goal }: GoalCardProps) => {
             <div className={styles.progressSection}>
                 <div className={styles.progressHeader}>
                     <span className={styles.progressLabel}>Progress</span>
-                    <span className={styles.savedAmount}>{formattedSavedAmount} saved</span>
+                    <span className={`${styles.savedAmount} ${isComplete ? styles.completed : ''}`}>
+                        {formattedSavedAmount} saved
+                    </span>
                 </div>
                 
-                <ProgressBar progress={progress} />
+                <ProgressBar progress={progress} isComplete={isComplete} />
                 
                 <div className={styles.progressFooter}>
                     <span className={styles.contributionCount}>{contributionText}</span>
-                    <span className={styles.remainingAmount}>{formattedRemainingAmount} remaining</span>
+                    <span className={styles.remainingAmount}>
+                        {isComplete ? "Goal completed!" : `${formattedRemainingAmount} remaining`}
+                    </span>
                 </div>
             </div>
             
             <button 
                 className={styles.addContributionButton}
                 onClick={handleAddContribution}
+                disabled={isComplete}
             >
                 <span className={styles.plusIcon}>+</span>
-                Add Contribution
+                {isComplete ? "Goal Completed" : "Add Contribution"}
             </button>
         </div>
     );
