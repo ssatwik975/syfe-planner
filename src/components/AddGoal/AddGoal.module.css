@@ -1,0 +1,24 @@
+.form {
+  width: 100%;
+}
+
+.amountInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.currencyIndicator {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4F67FF;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.inputError {
+  border-color: #ff4d4f !important;
+  background-color: #fff1f0 !important;
+}

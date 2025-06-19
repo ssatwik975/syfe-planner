@@ -1,0 +1,37 @@
+.form {
+  width: 100%;
+}
+
+.goalInfo {
+  margin-bottom: 20px;
+  font-size: 0.875rem;
+  color: #666;
+  padding: 12px;
+  background-color: #f9fafc;
+  border-radius: 8px;
+}
+
+.optionalLabel {
+  font-weight: 400;
+  color: #888;
+  font-size: 0.75rem;
+}
+
+.currencyIndicator {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4F67FF;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.noteTextarea {
+  font-family: inherit;
+}
+
+.inputError {
+  border-color: #ff4d4f !important;
+  background-color: #fff1f0 !important;
+}

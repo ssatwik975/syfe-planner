@@ -1,134 +1,15 @@
 /* ==========================================================================
-   MODAL BASE STRUCTURE
-   ========================================================================== */
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(2px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modalContainer {
-  background-color: white;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-
-/* ==========================================================================
-   ANIMATIONS
-   ========================================================================== */
-.fadeIn { animation: fadeIn 0.3s ease-in-out forwards; }
-.fadeOut { animation: fadeOut 0.3s ease-in-out forwards; }
-.slideIn { animation: slideIn 0.3s ease-out forwards; }
-.slideOut { animation: slideOut 0.3s ease-out forwards; }
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideOut {
-  from {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-}
-
-/* ==========================================================================
-   MODAL HEADER
-   ========================================================================== */
-.modalHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 24px 20px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.modalHeaderContent {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.modalIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #edf0ff;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-}
-
-.modalHeader h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 0;
-}
-
-.closeButton {
-  background: none;
-  border: none;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  color: #666;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.closeButton:hover {
-  background-color: #f5f5f5;
-  color: #333;
-}
-
-/* ==========================================================================
    FORM BASICS
    ========================================================================== */
 .form {
-  padding: 24px;
+  width: 100%;
 }
 
 .formGroup {
   margin-bottom: 24px;
 }
 
-.formGroup label {
+.label {
   display: block;
   font-size: 0.875rem;
   font-weight: 500;
@@ -142,11 +23,11 @@
 }
 
 /* ==========================================================================
-   FORM CONTROLS
+   INPUT STYLING
    ========================================================================== */
-/* Input fields */
-.formGroup input[type="text"],
-.formGroup input[type="number"] {
+.inputWrapper input[type="text"],
+.inputWrapper input[type="number"],
+.inputWrapper textarea {
   width: 100%;
   padding: 14px 16px;
   font-size: 1rem;
@@ -155,38 +36,36 @@
   background-color: #f9fafc;
   color: #333;
   transition: all 0.2s ease;
+  font-family: inherit;
 }
 
-.formGroup input:focus {
+.inputWrapper input:focus,
+.inputWrapper textarea:focus {
   outline: none;
   border-color: #4F67FF;
   box-shadow: 0 0 0 3px rgba(79, 103, 255, 0.1);
   background-color: #fff;
 }
 
+.inputWrapper textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
 /* Remove spinners from number inputs */
-.formGroup input[type="number"]::-webkit-outer-spin-button,
-.formGroup input[type="number"]::-webkit-inner-spin-button {
+.inputWrapper input[type="number"]::-webkit-outer-spin-button,
+.inputWrapper input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-.formGroup input[type="number"] {
+.inputWrapper input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }
 
-/* Currency indicator */
-.currencyIndicator {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #4F67FF;
-  font-weight: 600;
-  pointer-events: none;
-}
-
-/* Error states */
+/* ==========================================================================
+   ERROR STATES
+   ========================================================================== */
 .inputError {
   border-color: #ff4d4f !important;
   background-color: #fff1f0 !important;
@@ -215,13 +94,6 @@
   font-weight: bold;
 }
 
-/* Amount input group */
-.amountInputGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
 /* ==========================================================================
    CURRENCY TOGGLE
    ========================================================================== */
@@ -237,6 +109,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin-bottom: 8px;
 }
 
 .currencyToggle {
@@ -287,6 +160,16 @@
 .rightActive .activeIndicator {
   transform: translateX(calc(100% + 4px));
   left: 0;
+}
+
+.conversionInfo {
+  color: #666;
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+
+.conversionInfo small {
+  font-style: italic;
 }
 
 /* ==========================================================================
@@ -373,7 +256,8 @@
 /* ==========================================================================
    DISABLED STATES
    ========================================================================== */
-.formGroup input:disabled,
+input:disabled,
+textarea:disabled,
 .currencyOption:disabled,
 .cancelButton:disabled,
 .submitButton:disabled {
@@ -389,13 +273,6 @@
    RESPONSIVE STYLING
    ========================================================================== */
 @media (max-width: 640px) {
-  .modalContainer {
-    width: 95%;
-    margin: 16px;
-    max-height: 90vh;
-    overflow-y: auto;
-  }
-  
   .formActions {
     flex-direction: column;
   }
