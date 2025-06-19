@@ -16,7 +16,8 @@ type GoalAction =
   | { type: 'ADD_CONTRIBUTION'; payload: Contribution & { goalId: string } }
   | { type: 'FETCH_RATES_START' }
   | { type: 'FETCH_RATES_SUCCESS'; payload: ExchangeRates }
-  | { type: 'FETCH_RATES_ERROR'; payload: string };
+  | { type: 'FETCH_RATES_ERROR'; payload: string }
+  | { type: 'SET_GOALS'; payload: Goal[] }; // for cross-tab sync
 
 // Initial state
 export const initialState: GoalState = {
@@ -94,6 +95,13 @@ export const goalReducer = (state: GoalState, action: GoalAction): GoalState => 
         ...state,
         error: action.payload,
         isLoading: false
+      };
+
+    // New case for handling goals set from another tab
+    case 'SET_GOALS':
+      return {
+        ...state,
+        goals: action.payload
       };
       
     default:

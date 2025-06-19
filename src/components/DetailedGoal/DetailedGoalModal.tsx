@@ -26,7 +26,8 @@ const DetailedGoalModal = ({ goal, isOpen, onClose }: DetailedGoalModalProps) =>
   const [editError, setEditError] = useState<string | null>(null);
   
   // Use the latest goal data from context
-  const { id, title, amount, currency, savedAmount, contributions } = currentDetailedGoal || goal;
+  const { id, title, amount, currency, savedAmount, contributions, createdAt } = currentDetailedGoal || 
+    { ...goal, createdAt: new Date().toISOString() }; // Provide a fallback for createdAt
   
   // Update the new amount state when the goal changes
   useEffect(() => {
@@ -60,13 +61,17 @@ const DetailedGoalModal = ({ goal, isOpen, onClose }: DetailedGoalModalProps) =>
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-      hour: '2-digit', 
+      hour: '2-digit',
       minute: '2-digit'
     });
   };
 
-  // Get creation date (first contribution or "N/A")
-  const creationDate = contributions.length > 0 ? formatDate(contributions[0].date) : 'N/A';
+  // Get creation date (either from explicit createdAt or first contribution)
+  const creationDate = createdAt 
+    ? formatDate(createdAt)
+    : contributions.length > 0 
+      ? formatDate(contributions[0].date)
+      : formatDate(new Date().toISOString()); // Fallback to current date
 
   // Handle removing a goal
   const handleRemoveGoal = () => {
