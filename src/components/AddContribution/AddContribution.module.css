@@ -2,37 +2,18 @@
   width: 100%;
 }
 
-.goalInfo {
-  margin-bottom: 10px;
-  font-size: 0.875rem;
-  color: #666;
-  padding: 12px;
-  background-color: #f9fafc;
-  border-radius: 8px;
-}
-
-.maxAmountInfo {
-  margin-bottom: 20px;
-  font-size: 0.875rem;
-  color: #666;
-  padding: 8px 12px;
-  background-color: #f0f9f0;
-  border-radius: 8px;
-  border-left: 3px solid #34c759;
-}
-
-.goalNameDisplay {
-  margin-bottom: 20px;
-  padding: 12px;
-  background-color: #f9fafc;
-  border-radius: 8px;
+/* Simplified goal name styling */
+.goalNameContainer {
+  margin-bottom: 24px;
   display: flex;
   align-items: center;
   gap: 8px;
+  border-bottom: 1px solid #eaeefb;
+  padding-bottom: 16px;
 }
 
 .goalNameTitle {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 600;
   color: #333;
   margin: 0;
@@ -41,6 +22,9 @@
 .goalCurrency {
   font-size: 0.875rem;
   color: #666;
+  background-color: #f0f3ff;
+  padding: 3px 8px;
+  border-radius: 4px;
 }
 
 .optionalLabel {
@@ -59,8 +43,21 @@
   pointer-events: none;
 }
 
+/* Character count for note */
+.characterCount {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  font-size: 0.75rem;
+  color: #888;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
 .noteTextarea {
   font-family: inherit;
+  padding-bottom: 30px !important;
 }
 
 .inputError {

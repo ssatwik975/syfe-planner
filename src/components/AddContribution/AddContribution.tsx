@@ -22,6 +22,8 @@ interface AddContributionProps {
   onClose: () => void;
 }
 
+const MAX_NOTE_LENGTH = 100; // Character limit for notes
+
 const AddContribution = ({ 
   goalId, 
   goalName, 
@@ -50,30 +52,68 @@ const AddContribution = ({
     const decimalPoint = value.match(/\./g)?.length || 0;
     if (decimalPoint <= 1) {
       setAmount(value);
-      
-      // Check if exceeds maximum
-      const amountValue = parseFloat(value);
-      if (!isNaN(amountValue)) {
-        // Calculate max contribution in current currency
-        let maxAllowedAmount = maxAmount;
-        if (currency !== goalCurrency) {
-          // Convert max amount to the contribution currency
-          const conversionRate = 
-            currency === 'USD' && goalCurrency === 'INR' 
-              ? exchangeRates.INR_USD  // INR -> USD
-              : exchangeRates.USD_INR; // USD -> INR
-          maxAllowedAmount = maxAmount * conversionRate;
-        }
-        
-        setExceedsMax(amountValue > maxAllowedAmount);
-      } else {
-        setExceedsMax(false);
-      }
+      checkIfExceedsMax(value, currency);
       
       // Clear error when user types
       if (error) {
         setError(null);
       }
+    }
+  };
+  
+  // Check if amount exceeds max allowed
+  const checkIfExceedsMax = (amountValue: string, currentCurrency: Currency) => {
+    const parsedAmount = parseFloat(amountValue);
+    
+    if (!isNaN(parsedAmount)) {
+      // Calculate max contribution in current currency
+      let maxAllowedAmount = maxAmount;
+      if (currentCurrency !== goalCurrency) {
+        // Convert max amount to the contribution currency
+        const conversionRate = 
+          currentCurrency === 'USD' && goalCurrency === 'INR' 
+            ? exchangeRates.INR_USD  // INR -> USD
+            : exchangeRates.USD_INR; // USD -> INR
+        maxAllowedAmount = maxAmount * conversionRate;
+      }
+      
+      setExceedsMax(parsedAmount > maxAllowedAmount);
+    } else {
+      setExceedsMax(false);
+    }
+  };
+  
+  // Handle currency change - convert existing amount to new currency
+  const handleCurrencyChange = (newCurrency: Currency) => {
+    if (amount && newCurrency !== currency) {
+      // Convert the current amount to the new currency
+      const parsedAmount = parseFloat(amount);
+      if (!isNaN(parsedAmount)) {
+        const conversionRate = 
+          currency === 'USD' && newCurrency === 'INR' 
+            ? exchangeRates.USD_INR 
+            : exchangeRates.INR_USD;
+        
+        // Convert and format to 2 decimal places
+        const convertedAmount = (parsedAmount * conversionRate).toFixed(2);
+        
+        // Update the amount
+        setAmount(convertedAmount);
+        
+        // Check if the new amount exceeds max in the new currency
+        checkIfExceedsMax(convertedAmount, newCurrency);
+      }
+    }
+    
+    // Update currency
+    setCurrency(newCurrency);
+  };
+  
+  // Handle note change with character limit
+  const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    if (value.length <= MAX_NOTE_LENGTH) {
+      setNote(value);
     }
   };
   
@@ -171,6 +211,9 @@ const AddContribution = ({
     </svg>
   );
   
+  // Create a randomized form name to prevent autofill grouping
+  const formName = `contribution-form-${Math.random().toString(36).substring(2, 9)}`;
+  
   return (
     <Modal 
       isOpen={isOpen} 
@@ -179,8 +222,8 @@ const AddContribution = ({
       icon={contributionIcon}
       isSubmitting={isSubmitting}
     >
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.goalNameDisplay}>
+      <form onSubmit={handleSubmit} className={styles.form} name={formName} autoComplete="off">
+        <div className={styles.goalNameContainer}>
           <h3 className={styles.goalNameTitle}>{goalName}</h3>
           <span className={styles.goalCurrency}>({goalCurrency})</span>
         </div>
@@ -194,11 +237,15 @@ const AddContribution = ({
               type="text" 
               inputMode="decimal"
               id="contributionAmount"
+              name={`contributionAmount-${Math.random()}`}
               value={amount}
               onChange={handleAmountChange}
               placeholder="0.00"
               className={error ? styles.inputError : exceedsMax ? styles.inputWarning : ''}
               disabled={isSubmitting}
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck="false"
             />
             <span className={styles.currencyIndicator}>{currency}</span>
           </InputWrapper>
@@ -215,7 +262,7 @@ const AddContribution = ({
         <FormGroup>
           <CurrencyToggle 
             currency={currency}
-            setCurrency={setCurrency}
+            setCurrency={handleCurrencyChange}
             disabled={isSubmitting}
             label="Contribution Currency"
           />
@@ -226,7 +273,7 @@ const AddContribution = ({
           />
         </FormGroup>
         
-        {/* Note Field */}
+        {/* Note Field with Character Limit */}
         <FormGroup>
           <Label htmlFor="contributionNote">
             Note <span className={styles.optionalLabel}>(optional)</span>
@@ -234,13 +281,21 @@ const AddContribution = ({
           <InputWrapper>
             <textarea
               id="contributionNote"
+              name={`contributionNote-${Math.random()}`}
               value={note}
-              onChange={(e) => setNote(e.target.value)}
+              onChange={handleNoteChange}
               placeholder="e.g. Birthday money, Bonus"
               rows={2}
+              maxLength={MAX_NOTE_LENGTH}
               className={styles.noteTextarea}
               disabled={isSubmitting}
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck="false"
             />
+            {note && (
+              <span className={styles.characterCount}>{note.length}/{MAX_NOTE_LENGTH}</span>
+            )}
           </InputWrapper>
         </FormGroup>
         

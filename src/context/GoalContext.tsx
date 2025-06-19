@@ -11,6 +11,8 @@ interface GoalContextType {
   isLoading: boolean;
   error: string | null;
   addGoal: (goalData: GoalFormData) => void;
+  removeGoal: (goalId: string) => void;
+  updateGoalAmount: (goalId: string, amount: number) => void;
   addContribution: (contributionData: ContributionFormData) => void;
   updateExchangeRates: () => Promise<void>;
   getTotalSaved: (currency: Currency) => number;
@@ -40,6 +42,22 @@ export const GoalProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         savedAmount: 0,
         contributions: []
       }
+    });
+  };
+
+  // Remove a goal
+  const removeGoal = (goalId: string) => {
+    dispatch({
+      type: 'REMOVE_GOAL',
+      payload: { goalId }
+    });
+  };
+
+  // Update goal amount
+  const updateGoalAmount = (goalId: string, amount: number) => {
+    dispatch({
+      type: 'UPDATE_GOAL_AMOUNT',
+      payload: { goalId, amount }
     });
   };
 
@@ -115,6 +133,8 @@ export const GoalProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       isLoading: state.isLoading,
       error: state.error,
       addGoal,
+      removeGoal,
+      updateGoalAmount,
       addContribution,
       updateExchangeRates,
       getTotalSaved,

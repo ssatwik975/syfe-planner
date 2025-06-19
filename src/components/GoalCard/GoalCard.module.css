@@ -129,8 +129,14 @@
   color: #777;
 }
 
+/* Updated button styles */
+.cardButtons {
+  display: flex;
+  gap: 8px;
+}
+
 .addContributionButton {
-  width: 100%;
+  flex: 1;
   padding: 0.85rem 0;
   background-color: #fff;
   color: #4F67FF;
@@ -147,14 +153,33 @@
   box-shadow: 0 2px 5px rgba(79, 103, 255, 0.08);
 }
 
-.addContributionButton:hover:not(:disabled) {
+.detailsButton {
+  flex: 1;
+  padding: 0.85rem 0;
+  background-color: #ffffff;
+  color: #4F67FF;
+  border: 1px solid #e0e7ff;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.addContributionButton:hover:not(:disabled),
+.detailsButton:hover {
   background-color: #f5f8ff;
   border-color: #d0d7ff;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(79, 103, 255, 0.12);
 }
 
-.addContributionButton:active:not(:disabled) {
+.addContributionButton:active:not(:disabled),
+.detailsButton:active {
   transform: translateY(0);
   box-shadow: 0 2px 4px rgba(79, 103, 255, 0.08);
 }
@@ -190,8 +215,14 @@
     margin-bottom: 1.5rem;
   }
   
-  .addContributionButton {
+  .addContributionButton, .detailsButton {
     padding: 0.75rem 0;
     font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cardButtons {
+    flex-direction: column;
   }
 }

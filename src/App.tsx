@@ -5,6 +5,7 @@ import { GoalProvider } from './context/GoalContext';
 import { ModalProvider } from './context/ModalContext';
 import DashboardTotal from './components/DashboardTotal/DashboardTotal';
 import GlobalContributionModal from './components/AddContribution/GlobalContributionModal';
+import GlobalDetailedGoalModal from './components/DetailedGoal/GlobalDetailedGoalModal';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           </main>
           
           <GlobalContributionModal />
+          <GlobalDetailedGoalModal />
         </div>
       </ModalProvider>
     </GoalProvider>

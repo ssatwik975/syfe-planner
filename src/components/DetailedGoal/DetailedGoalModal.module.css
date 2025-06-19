@@ -1,0 +1,374 @@
+/* Modal Content */
+.modalContent {
+  padding: 0 4px;
+}
+
+/* Action Buttons - Improved layout */
+.actionButtons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.editButton, .removeButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 0;
+  font-size: 0.875rem;
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.editButton {
+  background-color: #f0f3ff;
+  color: #4F67FF;
+  border: 1px solid #e0e7ff;
+  box-shadow: 0 1px 3px rgba(79, 103, 255, 0.08);
+}
+
+.removeButton {
+  background-color: #fff1f0;
+  color: #ff4d4f;
+  border: 1px solid #ffccc7;
+  box-shadow: 0 1px 3px rgba(255, 77, 79, 0.08);
+}
+
+.editButton:hover:not(:disabled) {
+  background-color: #e0e7ff;
+  box-shadow: 0 2px 5px rgba(79, 103, 255, 0.12);
+}
+
+.removeButton:hover {
+  background-color: #ffd6d3;
+  box-shadow: 0 2px 5px rgba(255, 77, 79, 0.12);
+}
+
+.editButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Created date text */
+.createdText {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* Tab Navigation */
+.tabContainer {
+  display: flex;
+  margin-bottom: 24px;
+  border-radius: 10px;
+  background-color: #f9fafc;
+  padding: 4px;
+  position: relative;
+  border: 1px solid #eaeefb;
+}
+
+.tabButton {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  outline: none;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.tabButton:hover {
+  color: #4F67FF;
+}
+
+.activeTab {
+  color: #4F67FF;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(79, 103, 255, 0.1);
+  font-weight: 600;
+}
+
+.countBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #edf0ff;
+  color: #4F67FF;
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+/* Overview Tab */
+.overviewTab {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.statCard {
+  background-color: #f9fafc;
+  border-radius: 10px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid #eaeefb;
+  transition: all 0.2s ease;
+}
+
+.statCard:hover {
+  border-color: #d5dff7;
+  box-shadow: 0 4px 12px rgba(79, 103, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.statValue {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.progressValue {
+  color: #4F67FF;
+}
+
+.completedStatus {
+  color: #1a8d4c;
+}
+
+/* Input fields for editing */
+.editAmountContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.inputWrapper input {
+  width: 100%;
+  padding: 10px 40px 10px 14px;
+  font-size: 1.1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  color: #333;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.inputWrapper input:focus {
+  outline: none;
+  border-color: #4F67FF;
+  box-shadow: 0 0 0 2px rgba(79, 103, 255, 0.1);
+}
+
+.currencyIndicator {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4F67FF;
+  font-weight: 600;
+}
+
+.inputError {
+  border-color: #ff4d4f !important;
+  background-color: #fff1f0 !important;
+}
+
+.errorText {
+  color: #ff4d4f;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.editActions {
+  display: flex;
+  gap: 8px;
+}
+
+.saveButton, .cancelButton {
+  flex: 1;
+  padding: 8px 0;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.saveButton {
+  background-color: #4F67FF;
+  color: white;
+  border: none;
+}
+
+.cancelButton {
+  background-color: white;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.saveButton:hover {
+  background-color: #3b52db;
+}
+
+.cancelButton:hover {
+  background-color: #f5f5f5;
+}
+
+/* Progress Section */
+.progressSection {
+  margin: 4px 0 16px;
+}
+
+.detailedProgress {
+  height: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Contributions Tab - Simplified */
+.contributionsTab {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+/* Simplified contribution list */
+.contributionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Simplified contribution item styling */
+.contributionItem {
+  background-color: #f9fafc;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #eaeefb;
+  transition: all 0.2s ease;
+}
+
+.contributionItem:hover {
+  border-color: #d5dff7;
+  box-shadow: 0 4px 12px rgba(79, 103, 255, 0.06);
+}
+
+/* Simplified header layout */
+.contributionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.contributionAmount {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.contributionDate {
+  font-size: 0.85rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Simplified contribution note section */
+.contributionNote {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.contributionNote p {
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.5;
+  color: #555;
+  word-break: break-word;  /* Ensure text breaks to prevent overflow */
+  overflow-wrap: break-word;
+  max-width: 100%;         /* Contain within parent width */
+}
+
+/* Empty State */
+.noData {
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.noData p {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #555;
+  margin: 0;
+}
+
+.noData span {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.emptyIcon {
+  color: #ccd0e1;
+  margin-bottom: 8px;
+}
+
+/* Responsive styles */
+@media (max-width: 640px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .actionButtons {
+    flex-direction: column-reverse;
+  }
+  
+  .contributionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  
+  .contributionItem {
+    padding: 14px;
+  }
+}

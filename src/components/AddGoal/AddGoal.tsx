@@ -111,6 +111,9 @@ const AddGoal = ({ isOpen, onClose, onSubmit, existingGoalNames }: AddGoalProps)
     </svg>
   );
 
+  // Create a randomized form name to prevent autofill grouping
+  const formName = `goal-form-${Math.random().toString(36).substring(2, 9)}`;
+
   return (
     <Modal 
       isOpen={isOpen} 
@@ -119,7 +122,7 @@ const AddGoal = ({ isOpen, onClose, onSubmit, existingGoalNames }: AddGoalProps)
       icon={addIcon}
       isSubmitting={isSubmitting}
     >
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.form} name={formName} autoComplete="off">
         {/* Goal Name Field */}
         <FormGroup>
           <Label htmlFor="goalTitle">Goal Name</Label>
@@ -128,11 +131,15 @@ const AddGoal = ({ isOpen, onClose, onSubmit, existingGoalNames }: AddGoalProps)
               ref={titleInputRef}
               type="text"
               id="goalTitle"
+              name={`goalTitle-${Math.random()}`}
               value={title}
-              onChange={(e) => setTitle(e.target.value.substring(0, 30))} // Limit to 30 chars
+              onChange={(e) => setTitle(e.target.value.substring(0, 30))}
               placeholder="e.g. Emergency Fund, New Laptop"
               className={errors.title ? styles.inputError : ''}
               maxLength={30}
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck="false"
             />
             {title && (
               <span className={styles.characterCount}>{title.length}/30</span>
@@ -150,11 +157,15 @@ const AddGoal = ({ isOpen, onClose, onSubmit, existingGoalNames }: AddGoalProps)
                 type="text" 
                 inputMode="decimal"
                 id="goalAmount"
+                name={`goalAmount-${Math.random()}`}
                 value={amount}
                 onChange={handleAmountChange}
                 placeholder="0.00"
                 className={errors.amount ? styles.inputError : ''}
                 disabled={isSubmitting}
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck="false"
               />
               <span className={styles.currencyIndicator}>{currency}</span>
             </InputWrapper>
