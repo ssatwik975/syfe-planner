@@ -6,6 +6,7 @@ import { ModalProvider } from './context/ModalContext';
 import DashboardTotal from './components/DashboardTotal/DashboardTotal';
 import GlobalContributionModal from './components/AddContribution/GlobalContributionModal';
 import GlobalDetailedGoalModal from './components/DetailedGoal/GlobalDetailedGoalModal';
+import GitHubAttribution from './components/GitHubAttribution/GitHubAttribution';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <GlobalContributionModal />
           <GlobalDetailedGoalModal />
         </div>
+        <GitHubAttribution />
       </ModalProvider>
     </GoalProvider>
   );

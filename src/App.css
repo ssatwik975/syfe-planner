@@ -20,6 +20,8 @@ body {
   width: 70%;
   margin: 0 auto;
   padding: 2rem 0;
+  /* Add padding at the bottom to prevent GitHubAttribution from covering content */
+  padding-bottom: 100px;
 }
 
 /* Main content */
@@ -39,5 +41,12 @@ body {
   .app-container {
     width: 95%;
     padding: 1rem 0;
+    padding-bottom: 90px; /* Slightly less padding on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .app-container {
+    padding-bottom: 80px; 
   }
 }
