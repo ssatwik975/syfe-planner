@@ -1,4 +1,4 @@
-import { ExchangeRates } from '../types/goals';
+import type { ExchangeRates } from '../types/goals';
 
 const API_KEY = import.meta.env.VITE_EXCHANGE_API_KEY;
 

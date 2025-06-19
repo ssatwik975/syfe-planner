@@ -8,6 +8,15 @@
   gap: 16px;
 }
 
+.characterCount {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 0.75rem;
+}
+
 .currencyIndicator {
   position: absolute;
   right: 12px;

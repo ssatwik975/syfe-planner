@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
-import { Goal, Currency, GoalFormData, ContributionFormData, ExchangeRates } from '../types/goals';
+import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import type { Goal, Currency, GoalFormData, ContributionFormData, ExchangeRates } from '../types/goals';
 import { goalReducer, initialState } from './goalReducer';
 import { fetchExchangeRates } from '../utils/api';
 

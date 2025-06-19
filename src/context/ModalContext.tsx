@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Currency } from '../types/goals';
+import React, { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
+import type { Currency } from '../types/goals';
 
 interface ModalContextType {
   isContributionModalOpen: boolean;

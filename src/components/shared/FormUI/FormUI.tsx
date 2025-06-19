@@ -1,6 +1,7 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
+import type { ReactNode } from 'react';
 import styles from './FormUI.module.css';
-import { Currency } from '../../types/goals';
+import type { Currency } from '../../../types/goals';
 
 // Form Group Component
 export const FormGroup: React.FC<{

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Currency } from '../../types/goals';
+import type { Currency } from '../../types/goals';
 import { useGoalContext } from '../../context/GoalContext';
 import Modal from '../shared/Modal/Modal';
 import { 
@@ -10,7 +10,7 @@ import {
   CurrencyToggle, 
   FormActions,
   ConversionInfo
-} from '../shared/FormUI';
+} from '../shared/FormUI/FormUI';
 import styles from './AddContribution.module.css';
 
 interface AddContributionProps {

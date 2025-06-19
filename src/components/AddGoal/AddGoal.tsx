@@ -8,7 +8,7 @@ import {
   ErrorText, 
   CurrencyToggle, 
   FormActions 
-} from '../shared/FormUI';
+} from '../shared/FormUI/FormUI';
 import styles from './AddGoal.module.css';
 
 interface AddGoalProps {
@@ -129,11 +129,14 @@ const AddGoal = ({ isOpen, onClose, onSubmit, existingGoalNames }: AddGoalProps)
               type="text"
               id="goalTitle"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => setTitle(e.target.value.substring(0, 30))} // Limit to 30 chars
               placeholder="e.g. Emergency Fund, New Laptop"
               className={errors.title ? styles.inputError : ''}
-              disabled={isSubmitting}
+              maxLength={30}
             />
+            {title && (
+              <span className={styles.characterCount}>{title.length}/30</span>
+            )}
           </InputWrapper>
           <ErrorText error={errors.title} />
         </FormGroup>

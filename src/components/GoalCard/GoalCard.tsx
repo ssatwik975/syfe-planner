@@ -9,11 +9,18 @@ interface GoalCardProps {
     goal: Goal;
 }
 
+const MAX_TITLE_LENGTH = 30; // Character limit for goal titles
+
 const GoalCard = ({ goal }: GoalCardProps) => {
     const { exchangeRates } = useGoalContext();
     const { openContributionModal } = useModalContext();
     
     const { id, title, amount, currency, savedAmount, contributions } = goal;
+    
+    // Format title with character limit
+    const formattedTitle = title.length > MAX_TITLE_LENGTH 
+        ? `${title.substring(0, MAX_TITLE_LENGTH)}...` 
+        : title;
     
     // Calculate progress percentage
     const progress = amount > 0 ? (savedAmount / amount) * 100 : 0;
@@ -45,7 +52,7 @@ const GoalCard = ({ goal }: GoalCardProps) => {
     return (
         <div className={styles.goalCard}>
             <div className={styles.goalHeader}>
-                <h3 className={styles.goalTitle}>{title}</h3>
+                <h3 className={styles.goalTitle} title={title}>{formattedTitle}</h3>
                 <div className={`${styles.progressPill} ${isComplete ? styles.completed : ''}`}>
                     {isComplete && (
                         <svg className={styles.checkIcon} width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -10,7 +10,8 @@ export const useGoals = () => {
     const newGoal: Goal = {
       id: crypto.randomUUID(),
       ...goalData,
-      savedAmount: 0
+      savedAmount: 0,
+      contributions: []
     };
     
     setGoals(prevGoals => [...prevGoals, newGoal]);

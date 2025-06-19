@@ -1,4 +1,4 @@
-import { Goal, ExchangeRates, Contribution } from '../types/goals';
+import type { Goal, ExchangeRates, Contribution } from '../types/goals';
 
 // Define the shape of our state
 interface GoalState {
