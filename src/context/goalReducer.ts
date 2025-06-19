@@ -23,8 +23,8 @@ type GoalAction =
 export const initialState: GoalState = {
   goals: [],
   exchangeRates: {
-    USD_INR: 75, // Default fallback rate
-    INR_USD: 1/75, // Default fallback rate
+    USD_INR: 86.49, // Default fallback rate
+    INR_USD: 1/86.49, // Default fallback rate
     lastUpdated: new Date().toISOString()
   },
   isLoading: false,
