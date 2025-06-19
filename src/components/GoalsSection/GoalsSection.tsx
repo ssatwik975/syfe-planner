@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import AddGoalForm from '../AddGoalForm/AddGoalForm';
+import AddGoal from '../AddGoal/AddGoal';
 import GoalsGrid from '../GoalsGrid/GoalsGrid';
-import { useGoals } from '../../hooks/useGoals';
+import { useGoalContext } from '../../context/GoalContext';
 import styles from './GoalsSection.module.css';
 
 const GoalsSection = () => {
-  const { goals, existingGoalNames, addGoal } = useGoals();
   const [isAddGoalOpen, setIsAddGoalOpen] = useState(false);
+  const { goals, addGoal } = useGoalContext();
+  
+  // Get existing goal names for validation
+  const existingGoalNames = goals.map(goal => goal.title);
 
   const handleOpenAddGoal = () => {
     setIsAddGoalOpen(true);
@@ -30,7 +33,7 @@ const GoalsSection = () => {
         onAddGoal={handleOpenAddGoal}
       />
 
-      <AddGoalForm 
+      <AddGoal 
         isOpen={isAddGoalOpen}
         onClose={() => setIsAddGoalOpen(false)}
         onSubmit={addGoal}
