@@ -33,10 +33,13 @@ const DashboardTotal = () => {
     <div className={styles.dashboardContainer}>
       <div className={styles.dashboardHeader}>
         <div className={styles.overviewTitle}>
-          <svg className={styles.chartIcon} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 9L7 5M7 5L11 9M7 5V19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M21 15L17 19M17 19L13 15M17 19V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <img 
+            src="/financialOverview.svg" 
+            alt="Financial Overview" 
+            className={styles.chartIcon} 
+            width="24" 
+            height="24"
+          />
           <h2>Financial Overview</h2>
         </div>
         <button 
@@ -74,9 +77,12 @@ const DashboardTotal = () => {
         <div className={styles.statItem}>
           <div className={styles.statHeader}>
             <div className={styles.statIcon}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2 17L12 22L22 17M2 12L12 17L22 12M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <img 
+                src="/totalSaved.svg" 
+                alt="Total Saved" 
+                width="22" 
+                height="22"
+              />
             </div>
             <h3>Total Saved</h3>
           </div>
@@ -89,10 +95,12 @@ const DashboardTotal = () => {
         <div className={styles.statItem}>
           <div className={styles.statHeader}>
             <div className={styles.statIcon}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" strokeWidth="2"/>
-                <path d="M8 2V6M16 2V6M2 10H22M7 14H9M12 14H14M17 14H19M7 18H9M12 18H14M17 18H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
+              <img 
+                src="/overallProgress.svg" 
+                alt="Overall Progress" 
+                width="24" 
+                height="24"
+              />
             </div>
             <h3>Overall Progress</h3>
           </div>

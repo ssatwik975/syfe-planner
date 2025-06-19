@@ -238,12 +238,13 @@ export const GoalProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
+  // Update exchange rates
   // Update exchange rates with rate limiting
-  const updateExchangeRates = async () => {
+  const updateExchangeRates = async (forceRefresh = false) => {
     const now = Date.now();
     
-    // Prevent rapid repeated fetches
-    if (now - lastFetchAttempt < MIN_FETCH_INTERVAL) {
+    // Prevent rapid repeated fetches unless forcing refresh
+    if (!forceRefresh && now - lastFetchAttempt < MIN_FETCH_INTERVAL) {
       console.log('Rate fetch throttled. Please wait before trying again.');
       return;
     }
@@ -251,23 +252,29 @@ export const GoalProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setLastFetchAttempt(now);
     
     try {
-      // Check if we have rates in cache that are still valid
-      const storedRates = localStorage.getItem(STORAGE_KEYS.RATES);
-      if (storedRates) {
-        const ratesData = JSON.parse(storedRates);
-        const lastUpdated = new Date(ratesData.lastUpdated).getTime();
-        const now = new Date().getTime();
-        
-        // If rates are less than 15 minutes old, use them instead of making an API call
-        if (now - lastUpdated < EXCHANGE_RATE_CACHE_TIME) {
-          dispatch({ type: 'FETCH_RATES_SUCCESS', payload: ratesData });
-          return;
+      // Skip cache check if force refresh is requested
+      if (!forceRefresh) {
+        const storedRates = localStorage.getItem(STORAGE_KEYS.RATES);
+        if (storedRates) {
+          const ratesData = JSON.parse(storedRates);
+          const lastUpdated = new Date(ratesData.lastUpdated).getTime();
+          const now = new Date().getTime();
+          
+          // If rates are less than 15 minutes old, use them instead of making an API call
+          if (now - lastUpdated < EXCHANGE_RATE_CACHE_TIME) {
+            dispatch({ type: 'FETCH_RATES_SUCCESS', payload: ratesData });
+            return;
+          }
         }
       }
       
       // Otherwise fetch fresh rates
       dispatch({ type: 'FETCH_RATES_START' });
+      
+      // Make the API call - now we need to ensure the API itself also ignores cache
+      // when forceRefresh is true (if you have implemented caching in the API function)
       const rates = await fetchExchangeRates();
+      
       dispatch({ type: 'FETCH_RATES_SUCCESS', payload: rates });
     } catch (error) {
       dispatch({ 
