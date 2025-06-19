@@ -56,12 +56,12 @@ I chose to stick with the given design and tweak it slightly, taking liberties t
 ## Project Structure
 
 ```txt
+public/                 # For small static files like SVGs 
 src/
 ├── components/         # Modular UI components (each in its own folder)
 ├── context/            # Contexts for global state management
 ├── types/              # Centralized TypeScript type definitions
 ├── utils/              # Utility functions (formatting, conversion, etc.)
-├── assets/             # Static images and icons
 ├── App.tsx             # Root layout
 └── main.tsx            # Application entry point
 and others
