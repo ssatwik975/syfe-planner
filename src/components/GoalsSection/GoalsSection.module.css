@@ -45,6 +45,11 @@
   box-shadow: 0 2px 4px rgba(79, 103, 255, 0.2);
 }
 
+.addGoalButton.active {
+  background-color: #3b52db;
+  color: white;
+}
+
 .plusIcon {
   font-weight: bold;
   font-size: 1.1rem;

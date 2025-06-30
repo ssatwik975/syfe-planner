@@ -20,3 +20,5 @@ export function sortContributionsByDate(contributions: Contribution[]): Contribu
     return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
 }
+
+// export default { sortContributionsByDate, sortGoalsByDate };

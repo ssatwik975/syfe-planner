@@ -8,8 +8,7 @@ interface ModalContextType {
   currentGoalId: string | null;
   currentGoalName: string | null;
   currentGoalCurrency: Currency | null;
-  maxAmount: number | null;
-  openContributionModal: (goalId: string, goalName: string, currency: Currency, maxAmount: number) => void;
+  openContributionModal: (goalId: string, goalName: string, currency: Currency) => void;
   closeContributionModal: () => void;
   
   // New detailed goal modal states
@@ -27,18 +26,16 @@ export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [currentGoalId, setCurrentGoalId] = useState<string | null>(null);
   const [currentGoalName, setCurrentGoalName] = useState<string | null>(null);
   const [currentGoalCurrency, setCurrentGoalCurrency] = useState<Currency | null>(null);
-  const [maxAmount, setMaxAmount] = useState<number | null>(null);
 
   // New states for detailed goal modal
   const [isDetailedGoalModalOpen, setIsDetailedGoalModalOpen] = useState(false);
   const [currentDetailedGoal, setCurrentDetailedGoal] = useState<Goal | null>(null);
 
   // Existing methods for contribution modal
-  const openContributionModal = (goalId: string, goalName: string, currency: Currency, maxAmount: number) => {
+  const openContributionModal = (goalId: string, goalName: string, currency: Currency) => {
     setCurrentGoalId(goalId);
     setCurrentGoalName(goalName);
     setCurrentGoalCurrency(currency);
-    setMaxAmount(maxAmount);
     setIsContributionModalOpen(true);
   };
 
@@ -62,7 +59,6 @@ export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       currentGoalId,
       currentGoalName,
       currentGoalCurrency,
-      maxAmount,
       openContributionModal,
       closeContributionModal,
       isDetailedGoalModalOpen,

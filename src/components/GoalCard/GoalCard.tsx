@@ -40,7 +40,7 @@ const GoalCard = ({ goal }: GoalCardProps) => {
     const formattedConvertedAmount = formatCurrency(convertedAmount, convertedCurrency);
     
     const handleAddContribution = () => {
-        openContributionModal(id, title, currency, remainingAmount);
+        openContributionModal(id, title, currency);
     };
 
     const handleShowDetails = () => {
@@ -106,10 +106,9 @@ const GoalCard = ({ goal }: GoalCardProps) => {
                 <button 
                     className={styles.addContributionButton}
                     onClick={handleAddContribution}
-                    disabled={isComplete}
                 >
                     <span className={styles.plusIcon}>+</span>
-                    {isComplete ? "Completed" : "Add"}
+                    {"Add"}
                 </button>
             </div>
         </div>
